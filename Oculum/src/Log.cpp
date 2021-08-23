@@ -1,6 +1,8 @@
 #include "ocpch.h"
 #include "Log.h"
 
+#include <string.h>
+
 namespace Oculum
 {
 #ifndef OC_DIST
@@ -58,6 +60,12 @@ namespace Oculum
 		log.Print(fmt, "ERROR", args);
 	}
 
+	void PaddedInsert(char* msg, int start, const char* str, int padlen)
+	{
+		int len = strlen(str);
+		memcpy(msg + start + padlen - len, str, len);
+	}
+
 	void Log::Print(const char* fmt, const char* level, va_list args)
 	{
 		__int64 t_micro = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - clk).count();
@@ -70,16 +78,18 @@ namespace Oculum
 		int t_mili = (int)std::floor(t_micro / 1000);
 		t_micro -= (__int64)t_mili * 1000;
 
-		std::cout << (t_hour < 10 ? "[0" : "[") << t_hour << (t_min < 10 ? ", 0" : ", ") << t_min << (t_sec < 10 ? ", 0" : ", ") << t_sec << (t_mili < 100 ? (t_mili < 10 ? ", 00" : ", 0") : ", ") << t_mili << (t_micro < 100 ? (t_micro < 10 ? ", 00" : ", 0") : ", ") << t_micro << "] " << level << " : ";
+		char time_out[] = "[00, 00, 00, 000, 000]";
+		PaddedInsert(time_out, 1, std::to_string(t_hour).c_str(), 2);
+		PaddedInsert(time_out, 5, std::to_string(t_min).c_str(), 2);
+		PaddedInsert(time_out, 9, std::to_string(t_sec).c_str(), 2);
+		PaddedInsert(time_out, 13, std::to_string(t_mili).c_str(), 3);
+		PaddedInsert(time_out, 18, std::to_string(t_micro).c_str(), 3);
+		std::cout << time_out << " " << level << " : ";
 
-		size_t len = std::strlen(fmt);
-		char* mod = new char[len + 2];
-		strcpy_s(mod, len + 1, fmt);
-		mod[len] = '\n';
-		mod[len + 1] = '\0';
-
-		vprintf(mod, args);
+		vprintf(fmt, args);
 		va_end(args);
+
+		std::cout << std::endl;
 	}
 #endif
 }

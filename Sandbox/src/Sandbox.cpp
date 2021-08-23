@@ -2,7 +2,7 @@
 
 Sandbox::Sandbox() : Oculum::Application()
 {
-	GetManager()->RegisterWindow(new MainWindow(GetManager()));
+	new MainWindow(GetManager());
 }
 
 Sandbox::~Sandbox()

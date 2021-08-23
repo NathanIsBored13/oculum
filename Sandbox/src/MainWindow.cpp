@@ -1,8 +1,12 @@
 #include "MainWindow.h"
+#include "ChildWindow.h"
 #include "TestEntity.h"
 
 MainWindow::MainWindow(Oculum::WindowManager* windowManager) : Oculum::Window(L"MainWindow", 400, 400, nullptr, windowManager)
 {
+	new ChildWindow(windowManager, this);
+	new ChildWindow(windowManager, this);
+	new ChildWindow(windowManager, this);
 	Oculum::Layer* layer;
 	layer = new Oculum::Layer("1");
 	GetStack()->PushLayer(layer);

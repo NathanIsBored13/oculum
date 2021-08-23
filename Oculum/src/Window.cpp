@@ -57,9 +57,10 @@ namespace Oculum
 			height + 100
 		};
 		AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
-		hWnd = CreateWindowEx(0, WindowTemplate::GetName(), name, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top, nullptr, nullptr, WindowTemplate::GetInstance(), this);
+		hWnd = CreateWindowEx(0, WindowTemplate::GetName(), name, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top, parent == nullptr ? nullptr : parent->GetHwnd(), nullptr, WindowTemplate::GetInstance(), this);
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
 		stack = LayerStack();
+		windowManager->RegisterWindow(this);
 	}
 
 	Window::~Window()
